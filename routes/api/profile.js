@@ -2,6 +2,7 @@ const express = require('express')
 const auth = require('../../middleware/auth')
 const { check, validationResult } = require('express-validator')
 const Profile = require('../../models/Profile')
+const User = require('../../models/User')
 
 const router = express.Router()
 /*
@@ -164,6 +165,28 @@ router.get('/user/:user_id', async (req, res) => {
 		if (error.name === 'CastError') {
 			return res.status(400).json({ msg: 'Profile does not exist' })
 		}
+		res.status(500).send('Server error')
+	}
+})
+
+/*
+ *	@route DELETE api/profile/
+ *	@desc Delete profile, user & posts
+ *	@access Private
+ */
+router.delete('/', auth, async (req, res) => {
+	try {
+		// TODO: Remove users posts
+
+		// Remove profile
+		await Profile.findOneAndRemove({ user: req.user.id })
+
+		// Remove user
+		await User.findOneAndRemove({ _id: req.user.id })
+
+		res.json({ msg: 'User deleted' })
+	} catch (error) {
+		console.error(error.message)
 		res.status(500).send('Server error')
 	}
 })
