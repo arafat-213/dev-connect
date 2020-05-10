@@ -140,4 +140,32 @@ router.get('/', async (req, res) => {
 	}
 })
 
+/*
+ *	@route GET api/profile/user/:user_id
+ *	@desc Get profile by user id
+ *	@access Public
+ */
+router.get('/user/:user_id', async (req, res) => {
+	try {
+		// Fetch profile for user id passed in url
+		const profile = await Profile.findOne({
+			user: req.params.user_id
+		}).populate('user', ['name', 'avatar'])
+
+		// check if profile exists
+		if (!profile)
+			return res.status(400).json({ msg: 'Profile does not exist' })
+
+		//profile exists
+		res.json(profile)
+	} catch (error) {
+		console.error(error)
+		// check if mongoose user id validation error
+		if (error.name === 'CastError') {
+			return res.status(400).json({ msg: 'Profile does not exist' })
+		}
+		res.status(500).send('Server error')
+	}
+})
+
 module.exports = router
