@@ -49,8 +49,8 @@ router.post(
 )
 
 /*
- *	@route POST api/posts
- *	@desc Create a post
+ *	@route GET api/posts
+ *	@desc Get all posts
  *	@access Private
  */
 router.get('/', auth, async (req, res) => {
@@ -61,6 +61,34 @@ router.get('/', auth, async (req, res) => {
 		// Send the posts
 		res.json(posts)
 	} catch (error) {
+		console.error(error.message)
+		res.status(500).send('Server Error')
+	}
+})
+
+/*
+ *	@route GET api/posts/:post_id
+ *	@desc Get a post by post_id
+ *	@access Private
+ */
+router.get('/:post_id', auth, async (req, res) => {
+	try {
+		// Fetch post for given post_id
+		const post = await Post.findById(req.params.post_id)
+
+		// Check if post exists
+		if (!post) {
+			// Post does not exist
+			return res.status(404).json({ msg: 'Post not found' })
+		}
+
+		// Post found, send the post
+		res.json(post)
+	} catch (error) {
+		// check if mongoose id validation error
+		if (error.name === 'CastError') {
+			return res.status(400).json({ msg: 'Post not found' })
+		}
 		console.error(error.message)
 		res.status(500).send('Server Error')
 	}
