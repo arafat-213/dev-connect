@@ -8,9 +8,11 @@ const Profile = require('../../models/Profile')
 
 const router = express.Router()
 
-// @route POST api/posts
-// @desc Create a post
-// @access Private
+/*
+ *	@route POST api/posts
+ *	@desc Create a post
+ *	@access Private
+ */
 router.post(
 	'/',
 	[auth, check('text', 'Text is required').not().isEmpty()],
@@ -45,5 +47,23 @@ router.post(
 		}
 	}
 )
+
+/*
+ *	@route POST api/posts
+ *	@desc Create a post
+ *	@access Private
+ */
+router.get('/', auth, async (req, res) => {
+	try {
+		// Fetch all the posts and sort by date desc order
+		const posts = await Post.find().sort({ date: -1 })
+
+		// Send the posts
+		res.json(posts)
+	} catch (error) {
+		console.error(error.message)
+		res.status(500).send('Server Error')
+	}
+})
 
 module.exports = router
