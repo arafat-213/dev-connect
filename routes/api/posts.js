@@ -87,11 +87,47 @@ router.get('/:post_id', auth, async (req, res) => {
 	} catch (error) {
 		// check if mongoose id validation error
 		if (error.name === 'CastError') {
-			return res.status(400).json({ msg: 'Post not found' })
+			return res.status(404).json({ msg: 'Post not found' })
 		}
 		console.error(error.message)
 		res.status(500).send('Server Error')
 	}
 })
 
+/*
+ *	@route DELETE api/posts/:post_id
+ *	@desc Delete a post by post_id
+ *	@access Private
+ */
+router.delete('/:post_id', auth, async (req, res) => {
+	try {
+		// Fetch post by post_id
+		const post = await Post.findById(req.params.post_id)
+
+		// Check if post exists
+		if (!post) {
+			// Post does not exists
+			return res.status(404).json({ msg: 'Post not found' })
+		}
+
+		// Check if user is authorized to delete the post
+		if (post.user.toString() !== req.user.id) {
+			// User is not authorized to delete the post
+			return res.status(401).json({ msg: 'User not authorized' })
+		}
+
+		// User is authorized and post exists, Delete it
+		await post.remove()
+
+		// Post deleted
+		res.json({ msg: 'Post deleted' })
+	} catch (error) {
+		// check if mongoose id validation error
+		if (error.name === 'CastError') {
+			return res.status(404).json({ msg: 'Post not found' })
+		}
+		console.error(error.message)
+		res.status(500).send('Server Error')
+	}
+})
 module.exports = router

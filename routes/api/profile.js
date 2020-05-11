@@ -157,7 +157,7 @@ router.get('/user/:user_id', async (req, res) => {
 
 		// check if profile exists
 		if (!profile)
-			return res.status(400).json({ msg: 'Profile does not exist' })
+			return res.status(404).json({ msg: 'Profile does not exist' })
 
 		//profile exists
 		res.json(profile)
@@ -165,7 +165,7 @@ router.get('/user/:user_id', async (req, res) => {
 		console.error(error)
 		// check if mongoose user id validation error
 		if (error.name === 'CastError') {
-			return res.status(400).json({ msg: 'Profile does not exist' })
+			return res.status(404).json({ msg: 'Profile does not exist' })
 		}
 		res.status(500).send('Server error')
 	}
