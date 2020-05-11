@@ -281,4 +281,95 @@ router.delete('/experience/:exp_id', auth, async (req, res) => {
 	} catch (error) {}
 })
 
+/*
+ *	@route PUT api/profile/education
+ *	@desc Add profile experience
+ *	@access Private
+ */
+router.put(
+	'/education',
+	[
+		auth,
+		[
+			check('school', 'School is required').not().isEmpty(),
+			check('degree', 'Degree is required').not().isEmpty(),
+			check('fieldofstudy', 'Field of study is required').not().isEmpty(),
+			check('from', 'From date is required').not().isEmpty()
+		]
+	],
+	async (req, res) => {
+		// Validate the req fields
+		const errors = validationResult(req)
+
+		// check if any error occured in validation
+		if (!errors.isEmpty()) {
+			return res.status(400).json({ errors: errors.array() })
+		}
+
+		// request fields validation passed
+		const {
+			school,
+			degree,
+			fieldofstudy,
+			to,
+			from,
+			current,
+			description
+		} = req.body
+
+		// create a new education object
+		const newEdu = {
+			school,
+			degree,
+			fieldofstudy,
+			to,
+			from,
+			current,
+			description
+		}
+
+		// put the education data in profile document
+		try {
+			// fetch the user profile
+			const profile = await Profile.findOne({ user: req.user.id })
+
+			// pushing the education data on profile object
+			// unshift() adds the data on first index, unlike push() which add data on last index
+			profile.education.unshift(newEdu)
+
+			// save data in DB
+			await profile.save()
+
+			// send the profile with education data added
+			res.json(profile)
+		} catch (error) {
+			console.error(error.message)
+			res.status(500).send('Server error')
+		}
+	}
+)
+
+/*
+ *	@route DELETE api/profile/education/:edu_id
+ *	@desc Delete education from profile
+ *	@access Private
+ */
+router.delete('/education/:edu_id', auth, async (req, res) => {
+	try {
+		// Get the user profile
+		const profile = await Profile.findOne({ user: req.user.id })
+
+		// Filters the education of passed param id
+		profile.education = profile.education.filter(
+			edu => edu._id.toString() !== req.params.edu_id
+		)
+
+		// Save the filtered profile (removed education for :exp_id)
+		await profile.save()
+
+		// send the profile
+		res.json(profile)
+	} catch (error) {}
+})
+
 module.exports = router
