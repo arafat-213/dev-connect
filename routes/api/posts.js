@@ -148,10 +148,7 @@ router.put('/:post_id/likes', auth, async (req, res) => {
 		}
 
 		// Check if the post has already been liked
-		if (
-			post.likes.filter(like => like.user.toString() === req.user.id)
-				.length > 0
-		) {
+		if (post.likes.some(like => like.user.toString() === req.user.id)) {
 			return res.status(400).json({ msg: 'Post already liked' })
 		}
 
@@ -164,6 +161,51 @@ router.put('/:post_id/likes', auth, async (req, res) => {
 		// Send the post
 		res.json(post.likes)
 	} catch (error) {
+		// check if mongoose id validation error
+		if (error.name === 'CastError') {
+			return res.status(404).json({ msg: 'Post not found' })
+		}
+		console.error(error.message)
+		res.status(500).send('Server Error')
+	}
+})
+
+/*
+ *	@route PUT api/posts/:post_id/unlikes
+ *	@desc Unlike a post
+ *	@access Private
+ */
+router.put('/:post_id/unlikes', auth, async (req, res) => {
+	try {
+		// Fetch post by post_id
+		const post = await Post.findById(req.params.post_id)
+
+		// Check if post exists
+		if (!post) {
+			// Post does not exists
+			return res.status(404).json({ msg: 'Post not found' })
+		}
+
+		// Check if the post has been liked by this user
+		if (!post.likes.some(like => like.user.toString() === req.user.id)) {
+			return res.status(400).json({ msg: 'Post has not been liked' })
+		}
+
+		// Remove the like on post
+		post.likes = post.likes.filter(
+			({ user }) => user.toString() !== req.user.id
+		)
+
+		// Save the post
+		await post.save()
+
+		// Send the post
+		res.json(post.likes)
+	} catch (error) {
+		// check if mongoose id validation error
+		if (error.name === 'CastError') {
+			return res.status(404).json({ msg: 'Post not found' })
+		}
 		console.error(error.message)
 		res.status(500).send('Server Error')
 	}
