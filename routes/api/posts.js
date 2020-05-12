@@ -211,4 +211,50 @@ router.put('/:post_id/unlikes', auth, async (req, res) => {
 	}
 })
 
+/*
+ *	@route POST api/posts/:post_id/comment
+ *	@desc Make comment on a post
+ *	@access Private
+ */
+router.post(
+	'/:post_id/comments',
+	[auth, check('text', 'Text is required').not().isEmpty()],
+	async (req, res) => {
+		try {
+			// Check if req data is valid
+			const errors = validationResult(req)
+			if (!errors.isEmpty()) {
+				// Validation failed
+				return res.status(400).json({ errors: errors.array() })
+			}
+
+			// Get the user to associate with this comment
+			const user = await User.findById(req.user.id).select('-password')
+
+			// Get the post on which comment is beign made by post_id
+			const post = await Post.findById(req.params.post_id)
+
+			// Build an object for new comment
+			const newComment = {
+				text: req.body.text,
+				name: user.name,
+				avatar: user.avatar,
+				user: req.user.id
+			}
+
+			// Save the comment on Post
+			post.comments.unshift(newComment)
+
+			// Save the post in DB
+			await post.save()
+
+			// Send the comments
+			res.json(post.comments)
+		} catch (error) {
+			console.log(error.message)
+			res.status(500).send('Server error')
+		}
+	}
+)
+
 module.exports = router
