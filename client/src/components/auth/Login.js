@@ -17,41 +17,39 @@ const Login = () => {
 	}
 	return (
 		<Fragment>
-			<section className='container'>
-				<h1 className='large text-primary'>Sign In</h1>
-				<p className='lead'>
-					<i className='fas fa-user'></i> Sign into Your Account
-				</p>
-				<form className='form' onSubmit={e => onSubmit(e)}>
-					<div className='form-group'>
-						<input
-							type='email'
-							placeholder='Email Address'
-							name='email'
-							value={email}
-							onChange={onChange}
-						/>
-					</div>
-					<div className='form-group'>
-						<input
-							type='password'
-							placeholder='Password'
-							name='password'
-							minLength='6'
-							value={password}
-							onChange={onChange}
-						/>
-					</div>
+			<h1 className='large text-primary'>Sign In</h1>
+			<p className='lead'>
+				<i className='fas fa-user'></i> Sign into Your Account
+			</p>
+			<form className='form' onSubmit={e => onSubmit(e)}>
+				<div className='form-group'>
 					<input
-						type='submit'
-						className='btn btn-primary'
-						value='Sign In'
+						type='email'
+						placeholder='Email Address'
+						name='email'
+						value={email}
+						onChange={onChange}
 					/>
-				</form>
-				<p className='my-1'>
-					Don't have an account? <Link to='/register'>Sign Up</Link>
-				</p>
-			</section>
+				</div>
+				<div className='form-group'>
+					<input
+						type='password'
+						placeholder='Password'
+						name='password'
+						minLength='6'
+						value={password}
+						onChange={onChange}
+					/>
+				</div>
+				<input
+					type='submit'
+					className='btn btn-primary'
+					value='Sign In'
+				/>
+			</form>
+			<p className='my-1'>
+				Don't have an account? <Link to='/register'>Sign Up</Link>
+			</p>
 		</Fragment>
 	)
 }
