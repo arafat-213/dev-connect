@@ -1,4 +1,4 @@
-import { GET_PROFILE, PROFILE_ERROR } from '../actions/types'
+import { GET_PROFILE, PROFILE_ERROR, CLEAR_PROFILE } from '../actions/types'
 
 /* *
  * @params profile : profile of user logged in or the another user whose profile a user visits
@@ -27,6 +27,13 @@ export default function (state = initailState, action) {
 			return {
 				...state,
 				error: payload,
+				loading: false
+			}
+		case CLEAR_PROFILE:
+			return {
+				...state,
+				profile: null,
+				repos: [],
 				loading: false
 			}
 		default:
