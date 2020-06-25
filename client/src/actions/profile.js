@@ -43,8 +43,7 @@ export const createProfile = (
 		})
 
 		dispatch(
-			setAlert(edit ? 'Profile updated' : 'Profile created'),
-			'success'
+			setAlert(edit ? 'Profile updated' : 'Profile created', 'success')
 		)
 
 		if (!edit) {
