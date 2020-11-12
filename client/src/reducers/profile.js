@@ -1,4 +1,9 @@
-import { GET_PROFILE, PROFILE_ERROR, CLEAR_PROFILE } from '../actions/types'
+import {
+	GET_PROFILE,
+	PROFILE_ERROR,
+	CLEAR_PROFILE,
+	UPDATE_PROFILE
+} from '../actions/types'
 
 /* *
  * @params profile : profile of user logged in or the another user whose profile a user visits
@@ -18,6 +23,7 @@ export default function (state = initailState, action) {
 	const { type, payload } = action
 	switch (type) {
 		case GET_PROFILE:
+		case UPDATE_PROFILE:
 			return {
 				...state,
 				profile: payload,
