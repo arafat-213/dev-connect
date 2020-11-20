@@ -4,7 +4,8 @@ import {
 	CLEAR_PROFILE,
 	UPDATE_PROFILE,
 	GET_PROFILES,
-	GET_REPOS
+	GET_REPOS,
+	NO_REPOS
 } from '../actions/types'
 
 /* *
@@ -42,11 +43,17 @@ export default function (state = initailState, action) {
 				...state,
 				repos: payload
 			}
+		case NO_REPOS:
+			return {
+				...state,
+				repos: []
+			}
 		case PROFILE_ERROR:
 			return {
 				...state,
 				error: payload,
-				loading: false
+				loading: false,
+				profile: null
 			}
 		case CLEAR_PROFILE:
 			return {
