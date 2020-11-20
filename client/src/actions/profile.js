@@ -6,7 +6,8 @@ import {
 	CLEAR_PROFILE,
 	ACCOUNT_DELETED,
 	GET_PROFILES,
-	GET_REPOS
+	GET_REPOS,
+	NO_REPOS
 } from './types'
 import { setAlert } from './alert'
 
@@ -72,7 +73,6 @@ export const getProfileById = userId => async dispatch => {
 
 // Get Github repos
 export const getGithubRepos = username => async dispatch => {
-	dispatch({ type: CLEAR_PROFILE })
 	try {
 		const res = await axios.get(`/api/profile/github/${username}`)
 		dispatch({
@@ -80,12 +80,9 @@ export const getGithubRepos = username => async dispatch => {
 			payload: res.data
 		})
 	} catch (err) {
+		console.log(err)
 		dispatch({
-			type: PROFILE_ERROR,
-			payload: {
-				msg: err.response.statusText,
-				status: err.response.status
-			}
+			type: NO_REPOS
 		})
 	}
 }
