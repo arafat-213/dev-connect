@@ -10,7 +10,8 @@ const PostItem = ({
 	post: { _id, text, name, avatar, user, likes, comments, date },
 	addLike,
 	removeLike,
-	deletePost
+	deletePost,
+	showActions
 }) => {
 	return (
 		<div className='post bg-white p-1 my-1'>
@@ -25,34 +26,42 @@ const PostItem = ({
 				<p className='post-date'>
 					Posted at <Moment format='HH:MM, DD-MM-YYYY'>{date}</Moment>
 				</p>
-				<button
-					onClick={e => addLike(_id)}
-					className='btn btn-light'
-					type='button'>
-					<i className='fas fa-thumbs-up'></i>
-					<span>
-						{likes.length > 0 && <span> {likes.length}</span>}
-					</span>
-				</button>
-				<button
-					onClick={e => removeLike(_id)}
-					className='btn btn-light'
-					type='button'>
-					<i className='fas fa-thumbs-down'></i>
-				</button>
-				<Link to={`/posts/${_id}`} className='btn btn-primary'>
-					Discussion{' '}
-					{comments.length > 0 && (
-						<span className='comment-count'>{comments.length}</span>
-					)}
-				</Link>
-				{!auth.loading && user === auth.user._id && (
-					<button
-						onClick={e => deletePost(_id)}
-						className='btn btn-danger'
-						type='button'>
-						<i className='fas fa-times'></i>
-					</button>
+				{showActions && (
+					<Fragment>
+						<button
+							onClick={e => addLike(_id)}
+							className='btn btn-light'
+							type='button'>
+							<i className='fas fa-thumbs-up'></i>
+							<span>
+								{likes.length > 0 && (
+									<span> {likes.length}</span>
+								)}
+							</span>
+						</button>
+						<button
+							onClick={e => removeLike(_id)}
+							className='btn btn-light'
+							type='button'>
+							<i className='fas fa-thumbs-down'></i>
+						</button>
+						<Link to={`/posts/${_id}`} className='btn btn-primary'>
+							Discussion{' '}
+							{comments.length > 0 && (
+								<span className='comment-count'>
+									{comments.length}
+								</span>
+							)}
+						</Link>
+						{!auth.loading && user === auth.user._id && (
+							<button
+								onClick={e => deletePost(_id)}
+								className='btn btn-danger'
+								type='button'>
+								<i className='fas fa-times'></i>
+							</button>
+						)}
+					</Fragment>
 				)}
 			</div>
 		</div>
@@ -65,6 +74,10 @@ PostItem.propTypes = {
 	addLike: PropTypes.func.isRequired,
 	removeLike: PropTypes.func.isRequired,
 	deletePost: PropTypes.func.isRequired
+}
+
+PostItem.defaultProps = {
+	showActions: true
 }
 
 const mapStateToProps = state => {
