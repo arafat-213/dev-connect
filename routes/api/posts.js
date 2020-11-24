@@ -132,11 +132,11 @@ router.delete('/:post_id', auth, async (req, res) => {
 })
 
 /*
- *	@route PUT api/posts/:post_id/likes
+ *	@route PUT api/posts/like/:post_id
  *	@desc Like a post
  *	@access Private
  */
-router.put('/:post_id/likes', auth, async (req, res) => {
+router.put('/like/:post_id', auth, async (req, res) => {
 	try {
 		// Fetch post by post_id
 		const post = await Post.findById(req.params.post_id)
@@ -171,11 +171,11 @@ router.put('/:post_id/likes', auth, async (req, res) => {
 })
 
 /*
- *	@route PUT api/posts/:post_id/unlikes
+ *	@route PUT api/posts/unlike/:post_id
  *	@desc Unlike a post
  *	@access Private
  */
-router.put('/:post_id/unlikes', auth, async (req, res) => {
+router.put('/unlike/:post_id', auth, async (req, res) => {
 	try {
 		// Fetch post by post_id
 		const post = await Post.findById(req.params.post_id)
@@ -212,12 +212,12 @@ router.put('/:post_id/unlikes', auth, async (req, res) => {
 })
 
 /*
- *	@route POST api/posts/:post_id/comment
+ *	@route POST api/posts/comment/:post_id
  *	@desc Make comment on a post
  *	@access Private
  */
 router.post(
-	'/:post_id/comments',
+	'/comment/:post_id',
 	[auth, check('text', 'Text is required').not().isEmpty()],
 	async (req, res) => {
 		try {
@@ -258,11 +258,11 @@ router.post(
 )
 
 /*
- *	@route DELETE api/posts/:post_id/comments/:comment_id
+ *	@route DELETE api/posts/comment/:post_id/:comment_id
  *	@desc Delete comment from a post
  *	@access Private
  */
-router.delete('/:post_id/comments/:comment_id', auth, async (req, res) => {
+router.delete('/comment/:post_id/:comment_id', auth, async (req, res) => {
 	try {
 		// Fetch post
 		const post = await Post.findById(req.params.post_id)
